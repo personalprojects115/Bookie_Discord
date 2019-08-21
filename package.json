@@ -1,0 +1,22 @@
+{
+  "name": "bookie",
+  "version": "1.0.0",
+  "description": "My personal bot for discord",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/personalprojects115/Bookie_Discord.git"
+  },
+  "keywords": [
+    "flemis"
+  ],
+  "author": "Marina De Pazzi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/personalprojects115/Bookie_Discord/issues"
+  },
+  "homepage": "https://github.com/personalprojects115/Bookie_Discord#readme"
+}
