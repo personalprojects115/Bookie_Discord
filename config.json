@@ -1,0 +1,12 @@
+{
+    "prefix": "!",
+    "token" : "NjEzNzI5OTE5Mzk4MTgyOTIz.XWDIKw.2kgqTgAlFokCT21QAuivpPkoaPM",
+    "name" : "Bookie",
+    "serial" : "MDP-115",
+    "birthday" : {
+        "day" : 20,
+        "month" : 7,
+        "year" : 2019
+    },
+    "parent" : "@MarinaDePazzi"
+}

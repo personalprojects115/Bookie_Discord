@@ -1,0 +1,7 @@
+Lesson 1 -> When using includes function of an array, if you want to check for the existence of a message within the array DO NOT do the following: 
+
+array.includes(message);
+
+Why? it will check if the OBJECT message exists within the array. Instead, do the following:
+
+array.includes(message.content);
