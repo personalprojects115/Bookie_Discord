@@ -30,6 +30,16 @@ bot.on('message', message =>{
 })
 
 bot.on('message', message => {
+    commands(message);
+})
+
+function commands(message){
+    if (!message.content.startsWith(prefix) || message.author.bot)
+        return;
+
+    const args = message.content.slice(prefix.length).split(/ +/);
+    const command = args.shift().toLowerCase();
+
     //ES6 language. ` and arrow functions (lambda expressions)
     if(message.content.startsWith(`${prefix}flemis`)){
         //reply message in channel without @, like an insta message. 
@@ -41,8 +51,19 @@ bot.on('message', message => {
             if(message.content.startsWith(`${prefix}shep`)){
                 message.channel.send("Its a beautiful day to save lives!");
             }
+            else {
+                if (message.content ===  `${prefix}server `){
+                        message.channel.send(`Server name: ${message.guild.name}\nTotal members: ${message.guild.memberCount}`);
+                }
+                else {
+                    if(message.content === `${prefix}user-info`){
+                        message.channel.send(`Your username -> ${message.author.username}\n 
+                        Your ID -> ${message.author.id}`);
+                    }
+                }
+            }
         }
     }
-})
+}
 
 bot.login(token);
