@@ -24,46 +24,39 @@ bot.on('message', message => {
 
 bot.on('message', message =>{
     if(greetings.includes(message.content)){
-        //reply message in channel with @ directly to the user who sent 'Hello'
+        //reply message with @ directly to the user who sent 'Hello'
         message.reply('Hi friend!');
     }
 })
 
+//ES6 language. ` and arrow functions (lambda expressions)
 bot.on('message', message => {
-    commands(message);
-})
-
-function commands(message){
     if (!message.content.startsWith(prefix) || message.author.bot)
-        return;
+    return;
 
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
 
-    //ES6 language. ` and arrow functions (lambda expressions)
-    if(message.content.startsWith(`${prefix}flemis`)){
-        //reply message in channel without @, like an insta message. 
-        message.channel.send('É a arte do tudo!\nÉ tudo e ao mesmo tempo não é nada!');
-    } else {
-        if (message.content.startsWith(`${prefix}author`)){
-            message.channel.send("Bookie was created by Marina de Pazzi.");
-        } else {
-            if(message.content.startsWith(`${prefix}shep`)){
+    //reply message without @, like an insta message.
+    switch(message.content){
+        case `${prefix}flemis`:
+                message.channel.send('É a arte do tudo!\nÉ tudo e ao mesmo tempo não é nada!');
+                break;
+        case `${prefix}author`:
+                message.channel.send("Bookie was created by Marina de Pazzi.");
+                break;
+        case `${prefix}shep`:
                 message.channel.send("Its a beautiful day to save lives!");
-            }
-            else {
-                if (message.content ===  `${prefix}server `){
-                        message.channel.send(`Server name: ${message.guild.name}\nTotal members: ${message.guild.memberCount}`);
-                }
-                else {
-                    if(message.content === `${prefix}user-info`){
-                        message.channel.send(`Your username -> ${message.author.username}\n 
-                        Your ID -> ${message.author.id}`);
-                    }
-                }
-            }
-        }
+                break;
+        case `${prefix}server`:
+                message.channel.send(`Server name: ${message.guild.name}
+                \nTotal members: ${message.guild.memberCount}`);
+                break;
+        case `${prefix}user-info`:
+                message.channel.send(`Your username -> ${message.author.username}\n 
+                Your ID -> ${message.author.id}`);
+                break;
     }
-}
+})
 
 bot.login(token);
