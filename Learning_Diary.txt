@@ -5,3 +5,18 @@ array.includes(message);
 Why? it will check if the OBJECT message exists within the array. Instead, do the following:
 
 array.includes(message.content);
+
+=====================================================
+
+Lesson 2 -> SyntaxError: Invalid shorthand property initializer
+
+When this exception is thrown it means that a wrong symbol was used when initalizing a flemis was used.
+Ex: 
+module.exports = {
+    name: 'flemis'
+    description = '...'
+                ↑
+    instead of a "=", it should be used a ":"
+}
+
+=====================================================

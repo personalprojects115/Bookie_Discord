@@ -1,4 +1,7 @@
 //use whenever needed ->    `
+
+//fs is Node's native file system module.
+const fs = require('fs');
 // require the discord.js module
 const Discord = require("discord.js");
 
@@ -8,12 +11,22 @@ const { prefix, token } = require('./config.json');
 // create a new Discord client
 const bot = new Discord.Client();
 
-//temporary arrays to store potencial greetins, fairwells, and other inputs
-var greetings = ["hello", "hi", "sup", "yo", "hey", "oi", "eai", "eae", "hola", "que hondale", "bonjour"];
+bot.commands = new Discord.Collection();
 
-var fairwells = ["bye", "goodbye", "see ya", "arrivederci", "au revoir", "holla at ya", "later", "lets bounce"];
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
-var compliments = ["thank you", "thanks", "valeu", "eh nois", "grazie", "appreciated", "obrigada", "obrigado"];
+fileReaders();
+
+function fileReaders() {
+    for (const file of commandFiles) {
+        const command = require(`./commands/${file}`);
+
+        // set a new item in the Collection
+        // with the key as the command name and the value as the exported module
+        bot.commands.set(command.name, command);
+    }
+
+}
 
 // when the client is ready, run this code
 // this event will only trigger one time after logging in
@@ -24,65 +37,38 @@ bot.on('ready', () => {
 //ES6 language. '`' and arrow functions (lambda expressions)
 bot.on('message', message => {
     sentences(message);
+    commandHandler(message);
 })
 
-bot.on('message', message => {
-    commands(message);
-})
 
-function sentences(message){
-    if (greetings.includes(message.content.toLowerCase())) {
-        //reply message with @ directly to the user who sent 'Hello'
-        message.reply('Hi friend!');
-    }
-    else{
-        if (fairwells.includes(message.content.toLowerCase())){
-            message.reply('Goodbye friend!');
-        }
-        else {
-            if (compliments.includes(message.content.toLowerCase())){
-                message.reply('Your welcome! \nits my pleasure');
-            }
-        }
-    }
-}
+function commandHandler(message) {
+    //If the message either doesn't start with the prefix or was sent by a bot, exit early.
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-function commands(message) {
-    if (!message.content.startsWith(prefix) || message.author.bot)
-        return;
-
+    //Create an args variable that slices off the prefix entirely and then splits it into an array by spaces.
     const args = message.content.slice(prefix.length).split(/ +/);
-    const command = args.shift().toLowerCase();
+    //Create a command variable by calling args.shift(), which will take the first element in array and return it while also removing it from the original array (so that you don't have the command name string inside the args array).
+    const commandName = args.shift().toLowerCase();
 
-    if (message.content === `${prefix}help`) {
-        message.channel.send('We are undergoing maintence for a while :c.\n Our available commands are' + `${prefix}help` + '\n' + `${prefix}flemis` + '\n' + `${prefix}author` + '\n' + `${prefix}shep`);
-        return;
+    if (!bot.commands.has(commandName)) return;
+
+    const command = bot.commands.get(commandName);
+
+    if (command.args && !args.length) {
+        let reply = `You didn't provide any arguments, ${message.author}!`;
+
+        if (command.usage) {
+            reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+        }
+
+        return message.channel.send(reply);
     }
 
-    //reply message without @, like an insta message.
-    switch (message.content) {
-        case `${prefix}flemis`:
-            message.channel.send('É a arte do tudo!\nÉ tudo e ao mesmo tempo não é nada!');
-            break;
-        case `${prefix}author`:
-            message.channel.send("Bookie was created by Marina de Pazzi.");
-            break;
-        case `${prefix}shep`:
-            message.channel.send("Its a beautiful day to save lives!");
-            break;
-        case `${prefix}server`:
-            message.channel.send(`Server name: ${message.guild.name}
-                \nTotal members: ${message.guild.memberCount}`);
-            break;
-        case `${prefix}user-info`:
-            message.channel.send(`Your username -> ${message.author.username}\n 
-                Your ID -> ${message.author.id}`);
-            break;
-        default:
-            message.channel.send('Oh, excuse me \nI am afraid I did not quite get your ' + 
-            'request\nfor more infos, please type: !help');
-            break;
-
+    try {
+        command.execute(message, args);
+    } catch (error) {
+        console.error(error);
+        bot.commands.get('default').execute(message, args);
     }
 }
 
